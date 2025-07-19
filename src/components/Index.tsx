@@ -58,6 +58,7 @@ const Index = () => {
       const matches = getMatchingDigitsCount();
       setMatchingDigits(matches);
       setGuessCount(prev => prev + 1);
+      setInputValue(''); // Clear input after each guess
       
       // Check if player won (all 4 digits match)
       if (matches === 4) {
@@ -106,7 +107,7 @@ const Index = () => {
             onChange={handleInputChange}
             placeholder="0000"
             maxLength={4}
-            className="sketch-input w-full text-center text-2xl py-4 px-6"
+            className="sketch-input w-full text-center text-2xl py-4 px-6 focus:border-black focus:outline-none"
           />
           <div className="text-sm text-muted-foreground font-kalam">
             {inputValue.length}/4 digits
