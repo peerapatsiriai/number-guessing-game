@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Button } from './ui/button';
 
 
 const Index = () => {
   const [answerNumber, setAnswerNumber] = useState(1234);
-  const [inputValue, setInputValue] = useState(''); // Mock input
+  const [inputValue, setInputValue] = useState(''); 
   const [isVisible, setIsVisible] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
   const [showWinDialog, setShowWinDialog] = useState(false);
@@ -14,6 +15,15 @@ const Index = () => {
   const randomAnswerNumber = () => {
     const randomNum = Math.floor(Math.random() * 9000) + 1000; // Generate a random 4-digit number
     setAnswerNumber(randomNum);
+  };
+
+  const resetGame = () => {
+    setInputValue('');
+    setGuessCount(0);
+    setMatchingDigits(0);
+    setShowWinDialog(false);
+    setIsVisible(false);
+    randomAnswerNumber();
   };
 
   useEffect(() => {
@@ -40,17 +50,19 @@ const Index = () => {
       }
     }
 
-    // if( inputStr.length === 4) {
-    //   alert(`You entered: Win`);
-    // }
-
     return matches;
   };
 
   useEffect(() => {
     if (inputValue.length === 4) {
-      setMatchingDigits(getMatchingDigitsCount());
+      const matches = getMatchingDigitsCount();
+      setMatchingDigits(matches);
       setGuessCount(prev => prev + 1);
+      
+      // Check if player won (all 4 digits match)
+      if (matches === 4) {
+        setShowWinDialog(true);
+      }
     }
   }, [inputValue]);
 
@@ -123,20 +135,31 @@ const Index = () => {
         </div>
       </div>
 
-            {/* Win Dialog */}
-      {/* <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
+      {/* Win Dialog */}
+      <Dialog open={showWinDialog} onOpenChange={setShowWinDialog}>
         <DialogContent className="text-center">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-primary">🎉 ชนะแล้ว! 🎉</DialogTitle>
-            <DialogDescription className="text-lg mt-4">
-              คุณเดาตัวเลขถูกทั้งหมด 4 หลัก!
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-2xl font-bold text-primary text-center"> Congratulations! </DialogTitle>
+            <DialogDescription className="text-lg mt-4 text-center">
+              You guessed all 4 digits correctly!
             </DialogDescription>
           </DialogHeader>
           <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-            <p className="text-lg font-semibold">จำนวนครั้งที่เดา: {guessCount} ครั้ง</p>
+            <p className="text-lg font-semibold">Guess: {guessCount} Time</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              The number was: <span className="font-bold text-black">{answerNumber.toString().padStart(4, '0')}</span>
+            </p>
+          </div>
+          <div className="flex justify-center gap-4 mt-6">
+            <Button onClick={resetGame}>
+              Play Again
+            </Button>
+            <Button variant="outline" onClick={() => setShowWinDialog(false)}>
+              Close
+            </Button>
           </div>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
     </div>
   );
